@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>S/N</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      width: 100%;
+    }
+
+    input:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+
+    .output {
+      background: #f0f0f0;
+      padding: 12px 20px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: inline-block;
+      letter-spacing: 1px;
+      color: #333;
+    }
+
+    .copy-button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .copy-button:hover {
+      background-color: #357ABD;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>S/N</h2>
+    <div class="input-group">
+      <input type="text" id="leftCode" placeholder="6桁コード" maxlength="6" oninput="sanitizeAndUpdate(this)">
+      <input type="text" id="serialNumber" placeholder="S/N" maxlength="5" oninput="sanitizeAndUpdate(this)">
+    </div>
+    <div class="output" id="result">11桁コード</div><br>
+    <button class="copy-button" onclick="copyCode()">コピー</button>
+  </div>
+
+  <script>
+    function sanitizeAndUpdate(input) {
+      // 全角数字 → 半角、数字以外削除
+      input.value = input.value.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248));
+      input.value = input.value.replace(/\D/g, '');
+      updateCode();
+    }
+
+    function updateCode() {
+      const left = document.getElementById("leftCode").value.padStart(6, '0').slice(0, 6);
+      const sn = document.getElementById("serialNumber").value;
+      const paddedSN = sn.padStart(11 - left.length, '0');
+      const finalCode = (left + paddedSN).slice(0, 11);
+      document.getElementById("result").textContent = finalCode;
+    }
+
+    function copyCode() {
+      const text = document.getElementById("result").textContent;
+      navigator.clipboard.writeText(text).catch(err => {
+        console.error("コピー失敗:", err);
+      });
+    }
+  </script>
+</body>
+</html>
